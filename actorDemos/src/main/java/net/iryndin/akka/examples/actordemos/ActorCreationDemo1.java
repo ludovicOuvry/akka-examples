@@ -29,13 +29,11 @@ public class ActorCreationDemo1 {
 
         @Override
         public void preStart() {
-            super.preStart();
             System.out.println(actorName + " started");
         }
 
         @Override
         public void postStop() {
-            super.postStop();
             System.out.println(actorName + " stopped");
         }
     }
