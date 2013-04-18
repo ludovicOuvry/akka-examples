@@ -15,6 +15,7 @@
     <modules>
         <module>helloWorld</module>
         <module>remote-helloWorld</module>
+        <module>actorDemos</module>
     </modules>
 
     <properties>
