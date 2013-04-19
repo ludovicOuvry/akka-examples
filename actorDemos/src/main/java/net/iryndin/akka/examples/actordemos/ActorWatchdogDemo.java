@@ -94,13 +94,13 @@ public class ActorWatchdogDemo {
         @Override
         public void onReceive(Object message) throws Exception {
             if (message.equals("start")) {
-                calculatePrimeNumbers();
+                doNumberCrunching();
             } else {
                 unhandled(message);
             }
         }
 
-        private void calculatePrimeNumbers() throws InterruptedException {
+        private void doNumberCrunching() throws InterruptedException {
             for (int i=0; i<Integer.MAX_VALUE; i++) {
                 double k = i/23213.123213;
             }
