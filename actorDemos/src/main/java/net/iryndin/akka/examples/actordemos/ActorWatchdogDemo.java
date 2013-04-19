@@ -2,12 +2,6 @@ package net.iryndin.akka.examples.actordemos;
 
 import akka.actor.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-
 /**
  * Demonstrates creation of actor with UntypedActorFactory
  * Will fetch Google PageRank for a domain
@@ -18,12 +12,10 @@ public class ActorWatchdogDemo {
         final ActorSystem actorSystem = ActorSystem.create("as1");
         final ActorRef actor = actorSystem.actorOf(new Props(WatchDogActor.class));
         actor.tell("start", null);
-        Thread.sleep(10_000);
+        Thread.sleep(5000);
         actor.tell("killall", null);
-        Thread.sleep(2000);
-        //actor.tell(PoisonPill.getInstance(), null);
-        //actorSystem.shutdown();
-
+        Thread.sleep(5000);
+        actorSystem.shutdown();
     }
 
     /**
@@ -61,6 +53,13 @@ public class ActorWatchdogDemo {
                 for (int i=0; i<N; i++) {
                     getContext().stop(watchedActors[i]);
                 }
+            } else if (message instanceof Terminated) {
+                final Terminated t = (Terminated) message;
+                for (int i=0; i<N; i++) {
+                    if (watchedActors[i] == t.actor()) {
+                        System.out.println("worker"+ i + " completed");
+                    }
+                }
             } else {
                 System.out.println("Watchdog get: " + message);
                 unhandled(message);
@@ -68,8 +67,8 @@ public class ActorWatchdogDemo {
         }
 
         private void sendAllChildren(String s) {
-            for (int i=0; i<N; i++) {
-                watchedActors[i].tell(s, getSelf());
+            for (ActorRef a : watchedActors) {
+                a.tell(s, getSelf());
             }
         }
 
@@ -109,12 +108,12 @@ public class ActorWatchdogDemo {
 
         @Override
         public void preStart() {
-            //System.out.println("Start Worker " + number);
+            System.out.println("Start Worker " + number);
         }
 
         @Override
         public void postStop() {
-            //System.out.println("Stop Worker " + number);
+            System.out.println("Stop Worker " + number);
         }
     }
 }
